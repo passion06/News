@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.project.newsapp.dagger.DaggerApp
 import com.project.newsapp.dagger.DaggerNewsComponent
 import com.project.newsapp.data.NewsAPI
@@ -17,19 +18,20 @@ import javax.inject.Inject
 
 
 class NewsListActivity : AppCompatActivity(),NewsListListener.NewsListView {
-   // @Inject
+    @Inject
     lateinit var newsListPresenter: NewsListPresenter
     private lateinit var newsListBinding:NewsListBinding
+    var isLoading = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         newsListBinding = NewsListBinding.inflate(layoutInflater)
         setContentView(newsListBinding.root)
+        //DaggerApp.newsComponent.inject(this)
         val newsAPI = NewsAPI.create()
         val newsService = NewsService(newsAPI)
-       // DaggerApp.newsComponent.inject(this)
         newsListPresenter = NewsListPresenter(this,newsService,applicationContext)
-       // newsListPresenter = DaggerApp.newsComponent.provideNewsListPresenter()
+      //  newsListPresenter = DaggerApp.newsComponent.provideNewsListPresenter()
         configureView()
         }
 
@@ -39,11 +41,24 @@ class NewsListActivity : AppCompatActivity(),NewsListListener.NewsListView {
 
     override fun loadNewsView(newsList:List<NewsArticle>) {
         val newsListRecyclerView = newsListBinding.newsRecyclerview
-        val newsLayoutManager = LinearLayoutManager(this)
+        newsListRecyclerView.layoutManager = LinearLayoutManager(this)
         newsListRecyclerView.apply {
-            layoutManager = newsLayoutManager
-            val newsListAdapter = NewsListAdapter(newsList)
+            val newsListAdapter = NewsListAdapter()
             adapter = newsListAdapter
+            newsListAdapter.addItems(newsList)
+            addOnScrollListener(object : RecyclerView.OnScrollListener(){
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                    if(!isLoading){
+                        //If scroll position reaches bottom of the list
+                        if(layoutManager!=null && layoutManager.findLastCompletelyVisibleItemPosition()==newsList.size-1){
+                            newsListAdapter.addItems(newsList)
+                            isLoading = true
+                        }
+                    }
+                }
+            })
             addItemDecoration(DividerItemDecoration(baseContext,DividerItemDecoration.VERTICAL))
         }
     }
