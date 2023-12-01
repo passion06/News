@@ -1,14 +1,14 @@
 package com.project.newsapp.listener
 
-import android.content.Context
-import com.project.newsapp.data.NewsArticle
+import com.project.newsapp.data.NewsArticleModel
+import com.project.newsapp.data.NewsDetailModel
 import com.project.newsapp.data.NewsModel
 import io.reactivex.Observable
-import io.reactivex.disposables.Disposable
 
-interface NewsListListener {
+interface NewsListener {
     interface NewsListView{
-        fun loadNewsView(newsList:List<NewsArticle>)
+        fun loadNewsView(newsList:List<NewsArticleModel>)
+        fun handleNewsDetailsView(newsList:NewsDetailModel)
     }
     interface NewsListPresenter{
         fun fetchNews()

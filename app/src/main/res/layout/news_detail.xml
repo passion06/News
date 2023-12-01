@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id = "@+id/news_title"
+            style="@style/NewsTextView"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/news_author"
+            style="@style/NewsTextView" />
+
+        <TextView
+            android:id="@+id/news_publicationDate"
+            style="@style/NewsTextView" />
+
+        <ImageView
+            android:id="@+id/news_image"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:contentDescription="@string/news_article_image_contentdescription"
+            android:importantForAccessibility="no"/>
+
+        <TextView
+            android:id="@+id/news_source"
+            style="@style/NewsTextView" />
+
+        <TextView
+            android:id="@+id/news_Description"
+            style="@style/NewsTextView"
+            android:layout_marginTop="8dp" />
+
+        <TextView
+            android:id="@+id/news_articleLink"
+            style="@style/NewsTextView"
+            android:autoLink="web"
+            android:clickable="true"
+            android:layout_marginTop="8dp" />
+    </LinearLayout>
+
+</ScrollView>

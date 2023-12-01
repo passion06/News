@@ -4,24 +4,23 @@ import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.project.newsapp.data.NewsArticle
+import com.project.newsapp.common.NewsUtil
+import com.project.newsapp.data.NewsArticleModel
 import com.project.newsapp.databinding.NewsItemBinding
 import com.project.newsapp.databinding.NewsItemLoadingBinding
 
-class NewsListAdapter():RecyclerView.Adapter<RecyclerView.ViewHolder>(){
+class NewsListAdapter(private val newsItemClickListener: NewsItemClickListener):RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
      private lateinit var newsItemBinding: NewsItemBinding
      private lateinit var newsItemLoadingBinding: NewsItemLoadingBinding
      private val VIEW_TYPE_ITEM = 0
      private val VIEW_TYPE_LOADING = 1
-     private var newsList = mutableListOf<NewsArticle>()
+     private var newsList = mutableListOf<NewsArticleModel>()
      private var isLoading = false
-     fun addItems(newsItems :List<NewsArticle>){
+     var newsUtil = NewsUtil()
+     fun addItems(newsItems :List<NewsArticleModel>){
           val startPosition = itemCount
           newsList.addAll(newsItems)
           notifyItemRangeInserted(startPosition,newsItems.size)
@@ -61,7 +60,14 @@ class NewsListAdapter():RecyclerView.Adapter<RecyclerView.ViewHolder>(){
                     newsImage.visibility = View.GONE
                }
                val dateField = holder.publishedDate
-               dateField.text = news.publishedAt
+               dateField.text = news.publishedAt?.let { newsUtil.formatDate(it) }
+               holder.itemView.setOnClickListener {
+                    if(news.title?.isNotEmpty() == true){
+                         newsItemClickListener.onNewsRowClicked(news.title!!)
+                    } else{
+                         newsItemClickListener.onError("Title is empty")
+                    }
+               }
           } else if (holder is LoadingViewHolder) {
                val progressBar = holder.progressBar
                progressBar.visibility = View.VISIBLE
@@ -69,14 +75,19 @@ class NewsListAdapter():RecyclerView.Adapter<RecyclerView.ViewHolder>(){
      }
 
      inner class NewsViewHolder(itemBinding: NewsItemBinding): RecyclerView.ViewHolder(itemBinding.root) {
-          val titleTextView: TextView = itemBinding.newsItemTitle
-          val newsImage: ImageView = itemBinding.newsImage
-          val publishedDate : TextView = itemBinding.newsDate
+          val titleTextView = itemBinding.newsItemTitle
+          val newsImage = itemBinding.newsImage
+          val publishedDate = itemBinding.newsDate
      }
 
      inner class LoadingViewHolder(loadingBinding: NewsItemLoadingBinding):RecyclerView.ViewHolder(loadingBinding.root){
-          val progressBar:ProgressBar = loadingBinding.progressBar
+          val progressBar = loadingBinding.progressBar
      }
+}
+
+interface NewsItemClickListener{
+     fun onNewsRowClicked(title:String)
+     fun onError(message:String)
 }
 
 

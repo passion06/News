@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">NewsApp</string>
-    <string name="my_news_app_title">My News App</string>
+    <string name="my_news_app_title">News</string>
+    <string name="news_details_label">News Details</string>
+    <string name="source_label">Source:</string>
+    <string name="news_article_image_contentdescription">News Article Image</string>
 </resources>

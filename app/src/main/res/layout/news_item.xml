@@ -21,15 +21,15 @@
         android:id="@+id/news_item_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_margin="10dp"
         android:layout_toEndOf="@id/news_image"
-        android:textSize="15sp"
+        android:textSize="18sp"
         android:textColor="@color/black" />
     <TextView
         android:id="@+id/news_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_margin="10dp"
         android:layout_toEndOf="@id/news_image"
         android:layout_below="@id/news_item_title"/>
     </RelativeLayout>
