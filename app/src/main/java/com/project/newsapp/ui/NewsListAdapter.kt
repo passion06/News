@@ -31,7 +31,7 @@ class NewsListAdapter(private val newsItemClickListener: NewsItemClickListener):
           return if (newsList[position].title == null) VIEW_TYPE_LOADING else VIEW_TYPE_ITEM
      }
 
-     //inflating the layout and return the holder
+     //inflating the appropriate layout and return the holder
      override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
           return if(viewType == VIEW_TYPE_LOADING){
                newsItemLoadingBinding = NewsItemLoadingBinding.inflate(LayoutInflater.from(parent.context),parent,false)
@@ -73,13 +73,14 @@ class NewsListAdapter(private val newsItemClickListener: NewsItemClickListener):
                progressBar.visibility = View.VISIBLE
           }
      }
-
+     //View holder for View_TYPE_ITEM
      inner class NewsViewHolder(itemBinding: NewsItemBinding): RecyclerView.ViewHolder(itemBinding.root) {
           val titleTextView = itemBinding.newsItemTitle
           val newsImage = itemBinding.newsImage
           val publishedDate = itemBinding.newsDate
      }
 
+     //View holder for View_TYPE_LOADING
      inner class LoadingViewHolder(loadingBinding: NewsItemLoadingBinding):RecyclerView.ViewHolder(loadingBinding.root){
           val progressBar = loadingBinding.progressBar
      }

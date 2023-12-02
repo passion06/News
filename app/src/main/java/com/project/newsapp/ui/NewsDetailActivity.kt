@@ -63,7 +63,8 @@ class NewsDetailActivity:AppCompatActivity(), NewsDetailListener.View {
             newsSourceText.text = addToLabel(getString(R.string.source_label), source?.name)
             newsDescriptionText.text = description
             newsPublicationDateText.text = publishedAt?.let { newsUtil.formatDate(it) }
-            newsLinkText.text = url
+            val readMoreLabel = getString(R.string.news_readmore_label)
+            newsLinkText.text = addToLabel(readMoreLabel,url)
             newsLinkText.movementMethod = LinkMovementMethod.getInstance()
         }
     }

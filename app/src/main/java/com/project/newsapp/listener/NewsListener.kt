@@ -8,6 +8,7 @@ import io.reactivex.Observable
 interface NewsListener {
     interface NewsListView{
         fun loadNewsView(newsList:List<NewsArticleModel>)
+        fun handleError(message:String?)
         fun handleNewsDetailsView(newsList:NewsDetailModel)
     }
     interface NewsListPresenter{

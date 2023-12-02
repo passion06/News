@@ -9,7 +9,7 @@ import com.project.newsapp.listener.NewsListener
 import io.reactivex.disposables.Disposable
 import javax.inject.Inject
 
-class NewsListPresenter@Inject constructor(private val view: NewsListener.NewsListView, private val dataModel: NewsListener.NewsDataModel, private val context: Context):NewsListener.NewsListPresenter {
+class NewsListPresenter@Inject constructor(private val view: NewsListener.NewsListView, private val dataModel: NewsListener.NewsDataModel):NewsListener.NewsListPresenter {
     private lateinit var disposable: Disposable
     override fun fetchNews() {
                 disposable = dataModel.getNews()
@@ -38,8 +38,7 @@ class NewsListPresenter@Inject constructor(private val view: NewsListener.NewsLi
         if(newsData.isNotEmpty()) {
             view.loadNewsView(newsData)
         } else{
-            Toast.makeText(context, "Problem loading News", Toast.LENGTH_LONG)
-                .show()
+            view.handleError("Error fetching news list")
         }
     }
 
@@ -62,7 +61,7 @@ class NewsListPresenter@Inject constructor(private val view: NewsListener.NewsLi
                  { newsDetailsList ->
                      val filteredNewsDetailList = newsDetailsList.filter{it.title == selectedNewsTitle}
                      Log.d("API Response", filteredNewsDetailList.toString())
-                     handleNewsDetails(filteredNewsDetailList.firstOrNull())
+                     handleNewsDetails(context,filteredNewsDetailList.firstOrNull())
                  },
 
                  { error ->
@@ -71,12 +70,11 @@ class NewsListPresenter@Inject constructor(private val view: NewsListener.NewsLi
              )
     }
 
-    private fun handleNewsDetails(newsDetail:NewsDetailModel?){
+    private fun handleNewsDetails(context:Context,newsDetail:NewsDetailModel?){
         if (newsDetail != null) {
             view.handleNewsDetailsView(newsDetail)
         } else {
-            Toast.makeText(context, "Problem loading News", Toast.LENGTH_LONG)
-                .show()
+            view.handleError("Error fetching news details")
         }
     }
 

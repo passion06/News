@@ -25,10 +25,12 @@
 
         <ImageView
             android:id="@+id/news_image"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
+            android:layout_height="200dp"
+            android:layout_width="match_parent"
             android:contentDescription="@string/news_article_image_contentdescription"
-            android:importantForAccessibility="no"/>
+            android:importantForAccessibility="no"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"/>
 
         <TextView
             android:id="@+id/news_source"
