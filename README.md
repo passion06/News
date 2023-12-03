@@ -13,7 +13,7 @@ This is a native android app based on newsapi.org built using MVP architecture t
 
 ![News List](images/news_list.png)
 ![News Details](images/news.png)
-![News Article Link Redirection](newsLink_in_browser.png)
+![News Article Link Redirection](images/newsLink_in_browser.png)
 
 ## TechStack
 
