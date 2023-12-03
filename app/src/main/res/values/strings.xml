@@ -5,4 +5,7 @@
     <string name="source_label">Source:</string>
     <string name="news_article_image_contentdescription">News Article Image</string>
     <string name="news_readmore_label">Read More:</string>
+    <string name="error_label">Error</string>
+    <string name="title_for_the_newsitem_is_null">Title for the newsItem is null</string>
+    <string name="newsdetails">newsDetails</string>
 </resources>

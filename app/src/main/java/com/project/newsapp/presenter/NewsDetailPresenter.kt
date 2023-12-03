@@ -4,6 +4,8 @@ import android.os.Bundle
 import com.project.newsapp.data.NewsDetailModel
 
 class NewsDetailPresenter(var view: NewsDetailListener.View):NewsDetailListener.Presenter {
+
+    /* Extracts newsDetails from bundle and passes it to view */
     override fun processIntent(bundle: Bundle?) {
         val newsDetailModel:NewsDetailModel
         if(bundle!=null){

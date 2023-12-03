@@ -8,13 +8,12 @@ import io.reactivex.schedulers.Schedulers
 
 class NewsService(private val newsAPI: NewsAPI):NewsAPI,NewsListener.NewsDataModel {
 
+    /* Invokes the method in the NewsAPI instance triggering the network request */
     override fun getNews(): Observable<NewsModel> {
-        //Invokes the method in the NewsAPI instance triggering the network request
         return newsAPI.getNews()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .doOnError { throwable ->
-                Log.d("Error in service", "${throwable.message}")
                 Log.e("Error", "${throwable.message}")
             }
     }

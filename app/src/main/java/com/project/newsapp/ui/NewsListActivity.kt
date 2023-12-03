@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.project.newsapp.R
 import com.project.newsapp.common.NewsUtil
 import com.project.newsapp.dagger.DaggerNewsComponent
 import com.project.newsapp.dagger.NewsModule
@@ -41,17 +42,20 @@ class NewsListActivity : AppCompatActivity(), NewsListener.NewsListView {
         newsListPresenter.fetchNews()
     }
 
+    /* Call back method implementation on news row click */
     private val newsItemClickListener = object : NewsItemClickListener {
         override fun onNewsRowClicked(title: String) {
             newsListPresenter.fetchNewsDetails(baseContext, title)
         }
-
         override fun onError(message: String) {
-            Toast.makeText(baseContext, "Title for the newsItem is null", Toast.LENGTH_LONG).show()
+            Toast.makeText(baseContext, getString(R.string.title_for_the_newsitem_is_null), Toast.LENGTH_LONG).show()
         }
 
     }
 
+    /** This method handles rendering newsList in the adapter and uses scrollListener for pagination functionality
+     * @param newsList
+     */
     override fun loadNewsView(newsList: List<NewsArticleModel>) {
         val newsListRecyclerView = newsListBinding.newsRecyclerview
         newsListRecyclerView.layoutManager = LinearLayoutManager(this)
@@ -84,12 +88,13 @@ class NewsListActivity : AppCompatActivity(), NewsListener.NewsListView {
         }
     }
 
-    override fun handleNewsDetailsView(newsDetails: NewsDetailModel) {
+    /* Passes Intent with newsDetails to the NewsDetailActivity */
+    override fun handleNewsDetailsView(newsList: NewsDetailModel) {
         val intent = Intent(this, NewsDetailActivity::class.java)
-        intent.putExtra("newsDetails", newsDetails)
+        intent.putExtra(getString(R.string.newsdetails), newsList)
         startActivity(intent)
     }
-
+    /* handles clearing disposables when activity is destroyed */
     override fun onDestroy() {
         super.onDestroy()
         newsListPresenter.clearDisposable()

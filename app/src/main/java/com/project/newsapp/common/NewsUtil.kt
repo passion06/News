@@ -2,6 +2,7 @@ package com.project.newsapp.common
 
 import android.content.Context
 import androidx.appcompat.app.AlertDialog
+import com.project.newsapp.R
 
 class NewsUtil() {
     /** Returns the filtered date before 'T' from publishedDate which is of format "yyyy-mm-ddT<timestamp>"
@@ -22,7 +23,7 @@ class NewsUtil() {
      */
     fun displayError(context: Context, message:String){
         val builder = AlertDialog.Builder(context)
-        builder.setTitle("Error")
+        builder.setTitle(context.getString(R.string.error_label))
         builder.setMessage(message)
         builder.setPositiveButton("OK"){ dialog,_->
             dialog.dismiss()
