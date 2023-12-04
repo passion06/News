@@ -16,6 +16,6 @@ interface NewsListener {
         fun clearDisposable()
     }
     interface NewsDataModel{
-        fun getNews():Observable<NewsModel>
+        fun getNews(page:Int, pageSize:Int):Observable<NewsModel>
     }
 }
