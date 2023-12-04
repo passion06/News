@@ -1,6 +1,5 @@
 package com.project.newsapp.ui
 
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,13 +17,11 @@ class NewsListAdapter(private val newsItemClickListener: NewsItemClickListener):
      private val VIEW_TYPE_ITEM = 0
      private val VIEW_TYPE_LOADING = 1
      private var newsList = mutableListOf<NewsArticleModel>()
-     private var isLoading = false
      var newsUtil = NewsUtil()
      fun addItems(newsItems :List<NewsArticleModel>){
           val startPosition = itemCount
           newsList.addAll(newsItems)
           notifyItemRangeInserted(startPosition,newsItems.size)
-          isLoading = false
      }
      /** Determines whether the view type is of TYPE_ITEM or TYPE_LOADING */
      override fun getItemViewType(position: Int): Int {
@@ -55,19 +52,11 @@ class NewsListAdapter(private val newsItemClickListener: NewsItemClickListener):
                val newsImage = holder.newsImage
                if (news.urlToImage != null) {
                     Glide.with(holder.itemView.context).load(news.urlToImage).into(newsImage)
-                    newsImage.setImageURI(Uri.parse(news.urlToImage))
                } else {
                     newsImage.visibility = View.GONE
                }
                val dateField = holder.publishedDate
                dateField.text = news.publishedAt?.let { newsUtil.formatDate(it) }
-               holder.itemView.setOnClickListener {
-                    if(news.title?.isNotEmpty() == true){
-                         newsItemClickListener.onNewsRowClicked(news.title!!)
-                    } else{
-                         newsItemClickListener.onError("Title is empty")
-                    }
-               }
           } else if (holder is LoadingViewHolder) {
                val progressBar = holder.progressBar
                progressBar.visibility = View.VISIBLE
@@ -78,6 +67,18 @@ class NewsListAdapter(private val newsItemClickListener: NewsItemClickListener):
           val titleTextView = itemBinding.newsItemTitle
           val newsImage = itemBinding.newsImage
           val publishedDate = itemBinding.newsDate
+          init{
+               itemView.setOnClickListener {
+                    val adapterPosition = bindingAdapterPosition
+                    if (adapterPosition != RecyclerView.NO_POSITION) {
+                         if (newsList[adapterPosition].title?.isNotEmpty() == true) {
+                              newsItemClickListener.onNewsRowClicked(newsList[adapterPosition].title!!)
+                         } else {
+                              newsItemClickListener.onError("Title is empty")
+                         }
+                    }
+               }
+          }
      }
 
      /** View holder for View_TYPE_LOADING */
