@@ -54,8 +54,8 @@ class NewsListAdapter(private val newsItemClickListener: NewsItemClickListener):
                title.text = news.title
                val newsImage = holder.newsImage
                if (news.urlToImage != null) {
+                    newsImage.visibility = View.VISIBLE
                     Glide.with(holder.itemView.context).load(news.urlToImage).into(newsImage)
-                    newsImage.setImageURI(Uri.parse(news.urlToImage))
                } else {
                     newsImage.visibility = View.GONE
                }
