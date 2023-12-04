@@ -2,7 +2,6 @@ package com.project.newsapp.ui
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -25,8 +24,7 @@ class NewsListActivity : AppCompatActivity(), NewsListener.NewsListView {
     @Inject
     lateinit var newsListPresenter: NewsListPresenter
     private lateinit var newsListBinding: NewsListBinding
-    private lateinit var newsListRecyclerView: RecyclerView
-    private lateinit var newsListAdapter: NewsListAdapter
+    var isLoading = false
     private val newsUtil = NewsUtil()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,50 +38,46 @@ class NewsListActivity : AppCompatActivity(), NewsListener.NewsListView {
         configureView()
     }
 
+    private fun configureView() {
+        newsListPresenter.fetchNews()
+    }
+
     /* Call back method implementation on news row click */
     private val newsItemClickListener = object : NewsItemClickListener {
         override fun onNewsRowClicked(title: String) {
-            Log.d("NewsListActivity","Clicked on item with title:$title")
             newsListPresenter.fetchNewsDetails(baseContext, title)
         }
-
         override fun onError(message: String) {
-           newsUtil.displayError(baseContext,getString(R.string.title_for_the_newsitem_is_null))
+            Toast.makeText(baseContext, getString(R.string.title_for_the_newsitem_is_null), Toast.LENGTH_LONG).show()
         }
-    }
 
-    private fun configureView() {
-        newsListPresenter.fetchNews()
-        newsListRecyclerView = newsListBinding.newsRecyclerview
-        newsListRecyclerView.layoutManager = LinearLayoutManager(this)
-        newsListAdapter = NewsListAdapter(newsItemClickListener)
-        newsListRecyclerView.adapter = newsListAdapter
     }
 
     /** This method handles rendering newsList in the adapter and uses scrollListener for pagination functionality
      * @param newsList
      */
     override fun loadNewsView(newsList: List<NewsArticleModel>) {
-        newsListAdapter.addItems(newsList)
-        newsListRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                val layoutManager = recyclerView.layoutManager as LinearLayoutManager
-                val lastVisibleItem = layoutManager.findLastCompletelyVisibleItemPosition()
-                newsListPresenter.updateLastVisibleItemPosition(lastVisibleItem)
-                val totalItemCount = newsListAdapter.itemCount
-                //If scroll position reaches bottom of the list
-                if (lastVisibleItem == totalItemCount - 1) {
-                    newsListPresenter.loadMoreNews()
+        val newsListRecyclerView = newsListBinding.newsRecyclerview
+        newsListRecyclerView.layoutManager = LinearLayoutManager(this)
+        newsListRecyclerView.apply {
+            val newsListAdapter = NewsListAdapter(newsItemClickListener)
+            adapter = newsListAdapter
+            newsListAdapter.addItems(newsList)
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                    if (!isLoading) {
+                        //If scroll position reaches bottom of the list
+                        if (layoutManager != null && layoutManager.findLastCompletelyVisibleItemPosition() == newsList.size - 1) {
+                            newsListAdapter.addItems(newsList)
+                            isLoading = true
+                        }
+                    }
                 }
-            }
-        })
-        newsListRecyclerView.addItemDecoration(
-            DividerItemDecoration(
-                baseContext,
-                DividerItemDecoration.VERTICAL
-            )
-        )
+            })
+            addItemDecoration(DividerItemDecoration(baseContext, DividerItemDecoration.VERTICAL))
+        }
     }
 
     override fun handleError(message: String?) {
@@ -100,7 +94,6 @@ class NewsListActivity : AppCompatActivity(), NewsListener.NewsListView {
         intent.putExtra(getString(R.string.newsdetails), newsList)
         startActivity(intent)
     }
-
     /* handles clearing disposables when activity is destroyed */
     override fun onDestroy() {
         super.onDestroy()
